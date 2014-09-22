@@ -52,7 +52,7 @@ public class  RepositoryDescriptor {
     public String getStringRepositoryRoot() {
         String repo = this.repositoryRoot.toString();
         if (repo.endsWith("/")) {
-            return repo.substring(0, repo.length() - 2);
+            return repo.substring(0, repo.length() - 1);
         }
 
         return repo;
@@ -87,6 +87,7 @@ public class  RepositoryDescriptor {
 
     private void configure() {
         String repositoryAlias = "";
+        String branchName = "";
         if (!this.configured) {
 
             String uuid = Utils.getUUID(httpRequest.get());
@@ -97,22 +98,31 @@ public class  RepositoryDescriptor {
                 uuid = path;
             }
             if (uuid != null) {
-                // git based pattern
-                Pattern pattern = Pattern.compile("@(.*?)/");
+
                 if (uuid.indexOf("@") == -1) {
                     // simple fs pattern
-                    pattern = Pattern.compile(SEP + "(.*?)" + SEP);
+                    Pattern pattern = Pattern.compile(SEP + "(.*?)" + SEP);
+                    Matcher matcher = pattern.matcher(uuid);
+                    if (matcher.find()) {
+                        repositoryAlias = matcher.group(1);
+                    }
+                } else {
+                    // git based pattern
+                    Pattern pattern = Pattern.compile("(://)(.*?)@(.*?)/");
+                    Matcher matcher = pattern.matcher(uuid);
+                    if (matcher.find()) {
+                        branchName = matcher.group(2);
+                        repositoryAlias = matcher.group(3);
+                    }
                 }
-                Matcher matcher = pattern.matcher(uuid);
-                if (matcher.find()) {
-                    repositoryAlias = matcher.group(1);
-                }
+
             }
 
-            RepositoryDescriptor found = provider.getRepositoryDescriptor(repositoryAlias);
+            RepositoryDescriptor found = provider.getRepositoryDescriptor(repositoryAlias, branchName);
             this.fileSystem = found.getFileSystem();
             this.repositoryRoot = found.getRepositoryRoot();
             this.repositoryRootPath = found.getRepositoryRootPath();
         }
     }
+
 }

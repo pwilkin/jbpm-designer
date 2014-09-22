@@ -27,6 +27,8 @@
 
   <!-- compressed stylesheets -->
   <link xmlns="http://www.w3.org/1999/xhtml" rel="Stylesheet" media="screen" href="<%=request.getContextPath()%>/org.jbpm.designer.jBPMDesigner/css/designer-compressed-stylesheets.css" type="text/css" />
+  <!-- The sprite css files included here must come after the ext css because the classes override classes in ext styles -->
+  <link xmlns="http://www.w3.org/1999/xhtml" rel="Stylesheet" media="screen" href="<%=request.getContextPath()%>/org.jbpm.designer.jBPMDesigner/css/sprites/sprite-stylesheets.css" type="text/css" />
 
   <script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="<%=request.getContextPath()%>/org.jbpm.designer.jBPMDesigner/js/CFInstall.min.js"></script>
 
